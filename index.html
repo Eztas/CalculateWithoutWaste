@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アイテム組み合わせ計算機</title>
+    <title>最良効率ポイント使用計算機</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -133,7 +133,7 @@
 
             const { bestCombination, minRemainder, allCombinations } = findCombinations(totalPoints, itemPrices, itemLimits);
 
-            let resultText = `最適な組み合わせ: ${bestCombination}<br>残りポイント: ${minRemainder}<br><h3>上位5つの組み合わせ:</h3>`;
+            let resultText = `<h3>上位5つの組み合わせ:</h3>`;
             allCombinations.sort((a, b) => a.remainder - b.remainder);
             for (let i = 0; i < Math.min(5, allCombinations.length); i++) {
                 resultText += `${i + 1}. 組み合わせ: ${allCombinations[i].combination}, 残り: ${allCombinations[i].remainder}<br>`;
