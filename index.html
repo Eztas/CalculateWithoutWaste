@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アイテム組み合わせ計算機</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .item-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .item-input input {
+            margin-right: 10px;
+            width: 100px;
+        }
+        button {
+            margin: 10px 0;
+        }
+        .label-container {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .label-container div {
+            width: 100px; /* ラベルの幅を固定 */
+        }
+    </style>
+</head>
+<body>
+    <h1>アイテム組み合わせ計算機</h1>
+    
+    <label for="totalPoints">合計ポイント:</label>
+    <input type="number" id="totalPoints" value="6631">
+
+    <h2>アイテム情報</h2>
+    <div class="label-container">
+        <div>価格</div>
+        <div>上限個数</div>
+    </div>
+    <div id="itemInputs"></div>
+
+    <button id="addItem">+ アイテム追加</button>
+    <button id="removeItem">- アイテム削除</button>
+    <button id="calculateButton">計算</button>
+
+    <h2>結果</h2>
+    <div id="result"></div>
+
+    <script>
+        let itemCount = 0;
+        const initialPrices = [60, 22, 230, 550, 450, 1300];
+        const initialLimits = [20, 35, 10, 3, 10, 3];
+
+        function addItemInput(price = 0, limit = 0) {
+            itemCount++;
+            const itemInputs = document.getElementById('itemInputs');
+            const newItem = document.createElement('div');
+            newItem.className = 'item-input';
+            newItem.innerHTML = `
+                <input type="number" class="itemPrice" placeholder="価格" value="${price}">
+                <input type="number" class="itemLimit" placeholder="上限" value="${limit}">
+            `;
+            itemInputs.appendChild(newItem);
+        }
+
+        function removeItemInput() {
+            if (itemCount > 0) {
+                const itemInputs = document.getElementById('itemInputs');
+                itemInputs.removeChild(itemInputs.lastChild);
+                itemCount--;
+            }
+        }
+
+        document.getElementById('addItem').addEventListener('click', () => addItemInput());
+        document.getElementById('removeItem').addEventListener('click', removeItemInput);
+
+        // 初期アイテムを追加
+        for (let i = 0; i < initialPrices.length; i++) {
+            addItemInput(initialPrices[i], initialLimits[i]);
+        }
+
+        function findCombinations(totalPoints, itemPrices, itemLimits) {
+            let bestCombination = null;
+            let minRemainder = totalPoints;
+            let allCombinations = [];
+            
+            let maxCounts = itemPrices.map((price, index) => Math.min(Math.floor(totalPoints / price), itemLimits[index]));
+
+            function* productGenerator(arrays) {
+                if (arrays.length === 0) return;
+                let indices = new Array(arrays.length).fill(0);
+                while (true) {
+                    yield indices.map((i, j) => arrays[j][i]);
+                    let i = arrays.length - 1;
+                    while (i >= 0) {
+                        if (indices[i] < arrays[i].length - 1) {
+                            indices[i]++;
+                            break;
+                        }
+                        indices[i] = 0;
+                        i--;
+                        if (i < 0) return;
+                    }
+                }
+            }
+
+            let ranges = maxCounts.map(count => Array.from({ length: count + 1 }, (_, i) => i));
+            for (let combination of productGenerator(ranges)) {
+                let total = combination.reduce((sum, count, index) => sum + count * itemPrices[index], 0);
+                let remainder = totalPoints - total;
+
+                if (remainder >= 0) {
+                    allCombinations.push({ combination, remainder });
+                    if (remainder < minRemainder) {
+                        minRemainder = remainder;
+                        bestCombination = combination;
+                    }
+                }
+            }
+            return { bestCombination, minRemainder, allCombinations };
+        }
+
+        document.getElementById('calculateButton').addEventListener('click', () => {
+            const totalPoints = parseInt(document.getElementById('totalPoints').value);
+            const itemPrices = Array.from(document.getElementsByClassName('itemPrice')).map(input => parseInt(input.value));
+            const itemLimits = Array.from(document.getElementsByClassName('itemLimit')).map(input => parseInt(input.value));
+
+            const { bestCombination, minRemainder, allCombinations } = findCombinations(totalPoints, itemPrices, itemLimits);
+
+            let resultText = `最適な組み合わせ: ${bestCombination}<br>残りポイント: ${minRemainder}<br><h3>上位5つの組み合わせ:</h3>`;
+            allCombinations.sort((a, b) => a.remainder - b.remainder);
+            for (let i = 0; i < Math.min(5, allCombinations.length); i++) {
+                resultText += `${i + 1}. 組み合わせ: ${allCombinations[i].combination}, 残り: ${allCombinations[i].remainder}<br>`;
+            }
+
+            document.getElementById('result').innerHTML = resultText;
+        });
+    </script>
+</body>
+</html>
