@@ -36,11 +36,13 @@
     <h1>アイテム組み合わせ計算機</h1>
     
     <label for="totalPoints">合計ポイント:</label>
-    <input type="number" id="totalPoints" value="40890">
-    <p></p>
+    <input type="number" id="totalPoints" value="49420">
+    <br>
     <label for="fixSumPoints">固定消費ポイント:</label>
     <input type="number" id="fixPoints" value="100">
+    <br>
     ×
+    <br>
     <input type="number" id="fixNum" value="98">
 
     <h2>アイテム情報</h2>
@@ -60,7 +62,7 @@
     <script>
         let itemCount = 0;
         const initialPrices = [60, 22, 230, 550, 450, 1300, 5000];
-        const initialLimits = [20, 35, 10, 3, 10, 3, 3];
+        const initialLimits = [20, 35, 10, 3, 10, 3, 9];
 
         function addItemInput(price = 0, limit = 0) {
             itemCount++;
