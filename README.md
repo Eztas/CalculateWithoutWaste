@@ -1,5 +1,11 @@
-# CalculateWithoutWaste(9/29)
+# CalculateWithoutWaste(2024/9/29)
 
 https://eztas.github.io/CalculateWithoutWaste/
 
 ゲームのポイントをできるだけ無駄なく使いきるための計算をします
+
+# ver1 2024/9/29
+ポイントの余りが減らせる形で獲得したいものだけでポイント計算
+
+# ver2 2024/11/24~
+必ずポイントで獲得したいもの(確定消費)とポイントの余りが減らせる形で獲得したいもの(可変消費)を別々で選べるようにする
