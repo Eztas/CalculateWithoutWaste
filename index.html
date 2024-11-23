@@ -141,13 +141,11 @@
             const itemLimits = Array.from(document.getElementsByClassName('itemLimit')).map(input => parseInt(input.value));
 
             const { bestCombination, minRemainder, allCombinations } = findCombinations(totalPoints, itemPrices, itemLimits);
-
             let resultText = `<h3>上位5つの組み合わせ:</h3>`;
             allCombinations.sort((a, b) => a.remainder - b.remainder);
             for (let i = 0; i < Math.min(5, allCombinations.length); i++) {
                 resultText += `${i + 1}. 組み合わせ: ${allCombinations[i].combination}, 残り: ${allCombinations[i].remainder}<br>`;
             }
-
             document.getElementById('result').innerHTML = resultText;
         });
     </script>
