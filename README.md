@@ -22,3 +22,59 @@ perplexityにて実行したい内容を与えて作成
 早く利用したかったので自分自身は開発に携わっていない
 ## 今後の展望
 Reactを組み合わせてより使いやすいUIにしていきたい
+
+## Git Commands
+
+### 1. リモートリポジトリのクローン
+
+まず、リモートリポジトリをローカルにクローンする。リポジトリのURLを使用して次のコマンドを実行する。
+
+```
+git clone git@github.com:~.git
+```
+
+### 2. 現在のリポジトリを確認
+*のところが現在のブランチ
+
+```
+git branch
+```
+
+```
+  demo
+* develop
+  main
+```
+
+### 3. 新しいブランチを切りだし
+
+```
+git checkout -b {your-feature-branch}
+```
+
+### 4. 変更をリモートに反映
+
+```
+git add .
+git commit -m "メッセージを書いて下さい！"
+git push
+```
+
+### 5. リモートのブランチの変更をローカルに反映
+
+```
+git fetch origin
+git pull
+```
+
+### 6. リモートのブランチをローカルへ落とし込む(ローカルにbranch1がない)
+```
+git fetch origin
+git checkout -b branch1 origin/branch1
+```
+### 7. リモートのブランチをローカルのブランチに反映(ローカルにbranch1がある)
+```
+git fetch origin
+git checkout branch1
+git merge origin/branch1
+```
