@@ -36,7 +36,7 @@
     <h1>アイテム組み合わせ計算機</h1>
     
     <label for="totalPoints">合計ポイント:</label>
-    <input type="number" id="totalPoints" value="49420">
+    <input type="number" id="totalPoints" value="6632">
     <br>
     <label for="fixSumPoints">固定消費ポイント:</label>
     <br>
@@ -62,8 +62,8 @@
 
     <script>
         let itemCount = 0;
-        const initialPrices = [60, 22, 230, 550, 450, 1300, 5000];
-        const initialLimits = [20, 35, 10, 3, 10, 3, 9];
+        const initialPrices = [60, 22, 230, 550, 450, 1300];
+        const initialLimits = [20, 35, 10, 3, 10, 3];
 
         function addItemInput(price = 0, limit = 0) {
             itemCount++;
@@ -108,6 +108,16 @@
             
             let maxCounts = itemPrices.map((price, index) => Math.min(Math.floor(totalPoints / price), itemLimits[index]));
 
+            // 複数の配列の直積を生成するジェネレータ関数
+            /*
+            ジェネレーター関数は、イテレータを生成するための特殊な関数です。(function* で定義)
+            yieldキーワードを使用して値を返します。
+            呼び出されるたびに次の値を生成し、関数の状態を保持します。
+            メモリ効率が良く、大規模なデータセットや無限のシーケンスを扱うのに適しています。
+            ジェネレーター関数の主な利点は：
+            メモリ使用量の削減：必要なときにのみデータを生成するため、大量のデータを扱う際に効率的です。
+            遅延評価：値が必要になった時点で計算されるため、処理を最適化できます
+            */
             function* productGenerator(arrays) {
                 if (arrays.length === 0) return;
                 let indices = new Array(arrays.length).fill(0);
@@ -132,14 +142,14 @@
                 let remainder = totalPoints - total;
 
                 if (remainder >= 0) {
-                    allCombinations.push({ combination, remainder });
+                    allCombinations.push({ combination, remainder }); // 数値の組み合わせとその残りを記録
                     if (remainder < minRemainder) {
                         minRemainder = remainder;
                         bestCombination = combination;
                     }
                 }
             }
-            return { bestCombination, minRemainder, allCombinations };
+            return allCombinations; // { bestCombination, minRemainder, allCombinations }
         }
 
         document.getElementById('calculateButton').addEventListener('click', () => {
@@ -149,7 +159,7 @@
             const itemPrices = Array.from(document.getElementsByClassName('itemPrice')).map(input => parseInt(input.value));
             const itemLimits = Array.from(document.getElementsByClassName('itemLimit')).map(input => parseInt(input.value));
 
-            const { bestCombination, minRemainder, allCombinations } = findCombinations(totalPoints, itemPrices, itemLimits);
+            const allCombinations = findCombinations(totalPoints, itemPrices, itemLimits);
             let resultText = `<h3>上位5つの組み合わせ:</h3>`;
             allCombinations.sort((a, b) => a.remainder - b.remainder);
             for (let i = 0; i < Math.min(5, allCombinations.length); i++) {
