@@ -39,6 +39,7 @@
     <input type="number" id="totalPoints" value="49420">
     <br>
     <label for="fixSumPoints">固定消費ポイント:</label>
+    <br>
     <input type="number" id="fixPoints" value="100">
     <br>
     ×
@@ -72,7 +73,15 @@
             newItem.innerHTML = `
                 <input type="number" class="itemPrice" placeholder="価格" value="${price}">
                 <input type="number" class="itemLimit" placeholder="上限" value="${limit}">
+                <button class="deleteItem">×</button>
             `;
+
+            // オブジェクト指向のように、生成したボタンに押下されたら親要素を削除するメソッドを付与する
+            const deleteButton = newItem.querySelector('.deleteItem');
+            deleteButton.addEventListener('click', function() {
+                newItem.remove();  // この親要素（div.item-input）を削除
+                itemCount--;
+            });
             itemInputs.appendChild(newItem);
         }
 
