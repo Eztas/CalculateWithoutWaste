@@ -101,6 +101,15 @@
             addItemInput(initialPrices[i], initialLimits[i]);
         }
 
+        function setTableHeader(text){
+            const extraSpace = "&nbsp;";
+            return "<th>" + extraSpace + text + extraSpace + "</th>";
+        }
+
+        function setTableData(text){
+            return "<td style='text-align: right;'>" + text + "</td>";
+        }
+
         function findCombinations(totalPoints, itemPrices, itemLimits) {
             let bestCombination = null;
             let minRemainder = totalPoints;
@@ -153,6 +162,8 @@
         }
 
         document.getElementById('calculateButton').addEventListener('click', () => {
+            document.getElementById('result').innerHTML = '計算中';
+
             const fixPoints = parseInt(document.getElementById('fixPoints').value);
             const fixNum = parseInt(document.getElementById('fixNum').value);
             const totalPoints = parseInt(document.getElementById('totalPoints').value) - fixPoints*fixNum;
@@ -160,11 +171,30 @@
             const itemLimits = Array.from(document.getElementsByClassName('itemLimit')).map(input => parseInt(input.value));
 
             const allCombinations = findCombinations(totalPoints, itemPrices, itemLimits);
-            let resultText = `<h3>上位5つの組み合わせ:</h3>`;
             allCombinations.sort((a, b) => a.remainder - b.remainder);
-            for (let i = 0; i < Math.min(5, allCombinations.length); i++) {
-                resultText += `${i + 1}. 組み合わせ: ${allCombinations[i].combination}, 残り: ${allCombinations[i].remainder}<br>`;
+
+            // 表名, 見出しの作成
+            let resultText = `<h3>上位5つの組み合わせ:</h3>`;
+            resultText += "<table border='1' style='border-collapse:collapse;'>";
+            resultText += "<tr>" + setTableHeader("順位");
+
+            for (let j = 0; j < itemPrices.length; j++) {
+                resultText += setTableHeader(itemPrices[j]); // 詰まっていて見にくいので、見出しで余白を用意
             }
+            resultText += setTableHeader("残り") + "</tr>";
+
+            // 表の中身の作成
+            for (let i = 0; i < Math.min(5, allCombinations.length); i++) {
+                resultText += "<tr>" + setTableData(i+1);
+                for (let j = 0; j < itemPrices.length; j++) {
+                    resultText += setTableData(allCombinations[i].combination[j]);
+                }
+                resultText += setTableData(allCombinations[i].remainder);
+                resultText += "</tr>";
+            }
+
+            // 表の終わり, 表示内容の反映
+            resultText += "</table>";
             document.getElementById('result').innerHTML = resultText;
         });
     </script>
